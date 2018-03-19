@@ -41,10 +41,10 @@
 
     function create ()
     {
-        this.add.image(600, 800, 'chicken');
+        
         this.add.image(600, 0, 'rhino');
 
-        player = this.physics.add.sprite(100, 450, 'chicken');
+        player = this.add.image(600, 800, 'chicken');
         player.setCollideWorldBounds(true);
 
         scoreText = this.add.text(16, 16, 'score: 0', {fontSize: '32px', fill: '#FFF'});
