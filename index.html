@@ -31,7 +31,7 @@
     var score = 0;
     var scoreText;
 
-    var cursors = this.input.keyboard.createCursorKeys();
+    var cursors;
 
     function preload ()
     {
@@ -48,6 +48,8 @@
         player.setCollideWorldBounds(true);
 
         scoreText = this.add.text(16, 16, 'score: 0', {fontSize: '32px', fill: '#FFF'});
+
+         cursors = this.input.keyboard.createCursorKeys();
     }
 
     function update()
