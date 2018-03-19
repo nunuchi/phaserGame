@@ -46,20 +46,6 @@
         player = this.physics.add.sprite(100, 450, 'chicken');
         player.setCollideWorldBounds(true);
 
-        chickys = this.physics.add.group({
-            key: 'chicks',
-            repeat: 11,
-            setXY: {x: 12, y:0, stepX: 70 }
-        });
-
-        chickys.children.iterate(function (child) {
-            child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-        });
-
-
-        this.physics.add.collider(chickys, chickys);
-        this.physics.add.overlap(player, chickys, collectChickys, null, this);
-
         scoreText = this.add.text(16, 16, 'score: 0', {fontSize: '32px', fill: '#FFF'});
     }
 
