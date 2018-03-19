@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.0.0/dist/phaser.min.js"></script>
+</head>
+<body>
+
+    <script>
+    var config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: { y: 200 }
+            }
+        },
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+    var game = new Phaser.Game(config);
+    var player;
+    var boss;
+    var chicks;
+
+    var score = 0;
+    var scoreText;
+
+
+    function preload ()
+    {
+        this.load.image('chicken', 'kenney_animalpackredux/PNG/Round/chicken.png');
+        this.load.image('rhino', 'kenney_animalpackredux/PNG/Round/rhino.png');
+    }
+
+    function create ()
+    {
+        this.add.image(400, 300, 'chicken');
+        this.add.image(400, 0, 'rhino');
+
+        player = this.physics.add.sprite(100, 450, 'dude');
+        player.setCollideWorldBounds(true);
+
+        chickys = this.physics.add.group({
+            key: 'chicks',
+            repeat: 11,
+            ssetXY: {x: 12, y:0, stepX: 70 }
+        });
+
+        chickys.children.iterate(function (child) {
+            child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+        });
+
+
+        this.physics.add.collider(chickys, chickys);
+        this.physics.add.overlap(player, chickys, collectChickys, null, this);
+
+        scoreText = this.add.text(16, 16, 'score: 0', {fontSize: '32px', fill: '#FFF'});
+    }
+
+    function update()
+    {
+        if (cursors.left.isDown)
+        {
+            player.setVelocityX(-100);
+        }
+        else if (cursors.right.isDown)
+        {
+            player.setVelocityX(100);
+        }
+
+        if (cursors.up.isDown)
+        {
+            player.setVelocityX(-100);
+        }
+        else if (cursors.down.isDown)
+        {
+            player.setVelocityX(100);
+        }
+
+    }
+
+    function collectChickys (player, chicky) 
+    {
+        chicky.disableBody(true, true);
+        score += 10;
+        scoreText.setText('score: '+score);
+    }
+    </script>
+
+</body>
+</html>
