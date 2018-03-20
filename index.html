@@ -35,6 +35,7 @@
 
     function preload ()
     {
+        this.load.image('chicky', 'kenney_animalpackredux/PNG/Round/chick.png');
         this.load.image('chicken', 'kenney_animalpackredux/PNG/Round/chicken.png');
         this.load.image('rhino', 'kenney_animalpackredux/PNG/Round/rhino.png');
     }
@@ -50,6 +51,16 @@
         scoreText = this.add.text(16, 16, 'score: 0', {fontSize: '32px', fill: '#FFF'});
 
          cursors = this.input.keyboard.createCursorKeys();
+
+         chickys = this.physics.add.group({
+            key: 'chick',
+            repeat: 11,
+            setXY: {x: 12, y:0, stepX: 70}
+         }).setScale(0.2).refreshBody();
+
+         chickys.children.iterate(function(child) {
+            child.setBounceY(Phaser.Math.FloatBetween(0.4,0.8));
+         });
     }
 
     function update()
@@ -79,6 +90,15 @@
         chicky.disableBody(true, true);
         score += 10;
         scoreText.setText('score: '+score);
+
+        if (chicky.countActive(true) === 0)
+        {
+        //  A new batch of stars to collect
+        stars.children.iterate(function (child) {
+
+            child.enableBody(true, child.x, 0, true, true);
+
+        });
     }
     </script>
 
