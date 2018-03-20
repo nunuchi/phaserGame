@@ -8,8 +8,8 @@
     <script>
     var config = {
         type: Phaser.AUTO,
-        width: 1600,
-        height: 1200,
+        width: 1400,
+        height: 700,
         physics: {
             default: 'arcade',
             arcade: {
@@ -35,6 +35,7 @@
 
     function preload ()
     {
+        this.load.image('ground', 'assets/platform.png');
         this.load.image('chicky', 'kenney_animalpackredux/PNG/Round/chick.png');
         this.load.image('chicken', 'kenney_animalpackredux/PNG/Round/chicken.png');
         this.load.image('rhino', 'kenney_animalpackredux/PNG/Round/rhino.png');
@@ -43,10 +44,18 @@
     function create ()
     {
         
-        this.add.image(600, 0, 'rhino');
+        
+
+        platforms = this.physics.add.staticGroup();
+        platforms.create(700, 668, 'ground').setScale(4).refreshBody();
 
         player = this.physics.add.sprite(800, 600, 'chicken');
+        player.setBounce(1);
         player.setCollideWorldBounds(true);
+
+        boss = this.physics.add.sprite(600, 0, 'rhino');
+        boss.setBounce(1);
+        boss.setCollideWorldBounds(true);
 
         scoreText = this.add.text(16, 16, 'score: 0', {fontSize: '32px', fill: '#FFF'});
 
@@ -54,53 +63,99 @@
 
          chickys = this.physics.add.group({
             key: 'chicky',
-            repeat: 11,
-            setXY: {x: 12, y:0, stepX: 70}
-         }).setScale(0.2).refreshBody();
+            repeat: 4,
+            setXY: {x: Phaser.Math.FloatBetween(0,300), y:0, stepX: Phaser.Math.FloatBetween(100,300)}
+         });
 
          chickys.children.iterate(function(child) {
             child.setBounceY(Phaser.Math.FloatBetween(0.4,0.8));
+            child.setCollideWorldBounds(true);
+            child.setVelocity(Phaser.Math.Between(-200, 200), 20);
          });
+            
 
-         this.physics.add.overlap(player, chickys, collectStar, null, this);
+        this.physics.add.collider(player, platforms);
+        this.physics.add.collider(chickys, platforms, chickFloor, null, this);
+        
+        this.physics.add.collider(chickys, chickys);
+        this.physics.add.collider(player, boss);
+    
+        this.physics.add.overlap(player, chickys, hitChickys, null, this);
+        this.physics.add.collider(boss, platforms);
+        this.physics.add.collider(boss, chickys, byeChickys, null, this);
+
+         
     }
 
     function update()
     {
         if (cursors.left.isDown)
         {
-            player.setVelocityX(-100);
+            player.setVelocityX(-200);
         }
         else if (cursors.right.isDown)
         {
-            player.setVelocityX(100);
+            player.setVelocityX(200);
         }
 
         if (cursors.up.isDown)
         {
-            player.setVelocityY(-100);
+            player.setVelocityY(-200);
         }
         else if (cursors.down.isDown)
         {
-            player.setVelocityY(100);
+            player.setVelocityY(200);
         }
 
     }
 
-    function collectChickys (player, chicky) 
+    function hitChickys (player, chicky)
     {
-        chicky.disableBody(true, true);
-        score += 10;
-        scoreText.setText('score: '+score);
+        chicky.disableBody(true,true);
+        score += 1;
+        scoreText.setText('score: ' + score);
+        if (chickys.countActive(true) === 0) {
+            chickys.children.iterate(function (child) {
 
-        if (chicky.countActive(true) === 0)
-        {
-        //  A new batch of stars to collect
-        stars.children.iterate(function (child) {
+                child.enableBody(true, child.x, 0, true, true);
+                child.setBounceY(Phaser.Math.FloatBetween(0.4,0.8));
+                child.setCollideWorldBounds(true);
+                child.setVelocity(Phaser.Math.Between(-200, 200), 20);
 
-            child.enableBody(true, child.x, 0, true, true);
+            });
+        }
+    }
 
-        });
+    function chickFloor (chicky, floor)
+    {
+        chicky.disableBody(true,true);
+        if (chickys.countActive(true) === 0) {
+            chickys.children.iterate(function (child) {
+
+                child.enableBody(true, child.x, 0, true, true);
+                child.setBounceY(Phaser.Math.FloatBetween(0.4,0.8));
+                child.setCollideWorldBounds(true);
+                child.setVelocity(Phaser.Math.Between(-200, 200), 20);
+
+            });
+        }
+    }
+
+    function byeChickys (rhino, chicky)
+    {
+        chicky.disableBody(true,true);
+        score -= 1;
+        scoreText.setText('score: ' + score);
+        if (chickys.countActive(true) === 0) {
+            chickys.children.iterate(function (child) {
+
+                child.enableBody(true, child.x, 0, true, true);
+                child.setBounceY(Phaser.Math.FloatBetween(0.4,0.8));
+                child.setCollideWorldBounds(true);
+                child.setVelocity(Phaser.Math.Between(-200, 200), 20);
+
+            });
+        }
     }
     </script>
 
