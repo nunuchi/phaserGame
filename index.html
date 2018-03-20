@@ -8,8 +8,8 @@
     <script>
     var config = {
         type: Phaser.AUTO,
-        width: 1400,
-        height: 700,
+        width: 1200,
+        height: 600,
         physics: {
             default: 'arcade',
             arcade: {
@@ -47,7 +47,7 @@
         
 
         platforms = this.physics.add.staticGroup();
-        platforms.create(700, 668, 'ground').setScale(4).refreshBody();
+        platforms.create(600, 568, 'ground').setScale(3).refreshBody();
 
         player = this.physics.add.sprite(800, 600, 'chicken');
         player.setBounce(1);
